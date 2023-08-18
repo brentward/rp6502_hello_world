@@ -27,10 +27,15 @@
             "visibility": "default"
         },
         "build": {
-            "visibility": "hidden"
+            "visibility": "default"
         },
         "buildTarget": {
             "visibility": "default"
         },
+    },
+    "files.associations": {
+        "errno.h": "c",
+        "stdbool.h": "c",
+        "controllers.h": "c"
     },
 }
