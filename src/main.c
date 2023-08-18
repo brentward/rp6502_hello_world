@@ -38,12 +38,12 @@ static void vmode(uint16_t data)
 
 void clear(uint8_t color)
 {
-	uint16_t i = 0;
-	uint8_t vbyte;
-	vbyte = (color << 4) | color;
+    uint16_t i = 0;
+    uint8_t vbyte;
+    vbyte = (color << 4) | color;
     RIA_ADDR0 = 0;
     RIA_STEP0 = 1;
-	
+    
     // for (i = 0x1300; --i;)
     // {
     //     RIA_RW0 = 255;
@@ -71,204 +71,204 @@ void clear(uint8_t color)
 
 void main()
 {
-	int16_t px = 0, py =0 ;
-	int8_t fg_color = GREEN;
-	int8_t bg_color = BLACK;
-	int8_t last_color = BLACK;
-	uint16_t last_ctrl1 = 0xFFFF;
-	// uint8_t ctrl1_attached = 0;
-	// uint8_t ctrl2_attached = 0;
+    int16_t px = 0, py =0 ;
+    int8_t fg_color = GREEN;
+    int8_t bg_color = BLACK;
+    int8_t last_color = BLACK;
+    uint16_t last_ctrl1 = 0xFFFF;
+    // uint8_t ctrl1_attached = 0;
+    // uint8_t ctrl2_attached = 0;
 
-	puts("Hello, people! SNES controller draw!");
-	wait();
-	ctrl_init();
-	#if (HEIGHT == 180)
-		vmode(2);
-	#else
-		vmode(1);
-	#endif
-	clear(bg_color);
-	RIA_STEP0 = 0;
-	while (1)
-	{
-		read_controllers();
-		
-		if (((ctrl1 & ~DPAD_UNPRESSED) != DPAD_UNPRESSED) && !(ctrl1 & L_UNPRESSED))
-		{
-			RIA_ADDR0 = (px / 2) + (py * (WIDTH / 2));
-			RIA_RW0 &= ~(COLOR_MASK << ((px % 2) * 4));
-			RIA_RW0 |= (last_color << ((px % 2) * 4));
-		}
-		// if (ctrl1_attached == !(*ctrl1_ready == 0))
-		// {
-		// 	ctrl1_attached = !ctrl1_attached;
-		// 	printf("Controller 1 attached: %d\n", ctrl1_attached);
-		// }
-		// if (ctrl2_attached == !(*ctrl2_ready == 0))
-		// {
-		// 	ctrl2_attached = !ctrl2_attached;
-		// 	printf("Controller 2 attached: %d\n", ctrl2_attached);
-		// }
+    puts("Hello, people! SNES controller draw!");
+    wait();
+    ctrl_init();
+    #if (HEIGHT == 180)
+        vmode(2);
+    #else
+        vmode(1);
+    #endif
+    clear(bg_color);
+    RIA_STEP0 = 0;
+    while (1)
+    {
+        read_controllers();
+        
+        if (((ctrl1 & ~DPAD_UNPRESSED) != DPAD_UNPRESSED) && !(ctrl1 & L_UNPRESSED))
+        {
+            RIA_ADDR0 = (px / 2) + (py * (WIDTH / 2));
+            RIA_RW0 &= ~(COLOR_MASK << ((px % 2) * 4));
+            RIA_RW0 |= (last_color << ((px % 2) * 4));
+        }
+        // if (ctrl1_attached == !(*ctrl1_ready == 0))
+        // {
+        // 	ctrl1_attached = !ctrl1_attached;
+        // 	printf("Controller 1 attached: %d\n", ctrl1_attached);
+        // }
+        // if (ctrl2_attached == !(*ctrl2_ready == 0))
+        // {
+        // 	ctrl2_attached = !ctrl2_attached;
+        // 	printf("Controller 2 attached: %d\n", ctrl2_attached);
+        // }
 
-		if (!(ctrl1 & A_UNPRESSED))
-		{
-			if (fg_color < GREY)
-			{
-				fg_color += 1;
-			} else {
-				fg_color = BLACK;
-			}
-		}
-		if (((last_ctrl1 & B_UNPRESSED) != ((ctrl1 & B_UNPRESSED))) && !(ctrl1 & B_UNPRESSED))
-		{
-			if (fg_color < GREY)
-			{
-				fg_color += 1;
-			} else {
-				fg_color = BLACK;
-			}
-		}
+        if (!(ctrl1 & A_UNPRESSED))
+        {
+            if (fg_color < GREY)
+            {
+                fg_color += 1;
+            } else {
+                fg_color = BLACK;
+            }
+        }
+        if (((last_ctrl1 & B_UNPRESSED) != ((ctrl1 & B_UNPRESSED))) && !(ctrl1 & B_UNPRESSED))
+        {
+            if (fg_color < GREY)
+            {
+                fg_color += 1;
+            } else {
+                fg_color = BLACK;
+            }
+        }
 
-		if (!(ctrl1 & X_UNPRESSED))
-		{
-			if (fg_color > BLACK)
-			{
-				fg_color -= 1;
-			} else {
-				fg_color = GREY;
-			}
-		}
+        if (!(ctrl1 & X_UNPRESSED))
+        {
+            if (fg_color > BLACK)
+            {
+                fg_color -= 1;
+            } else {
+                fg_color = GREY;
+            }
+        }
 
-		if (((last_ctrl1 & Y_UNPRESSED) != ((ctrl1 & Y_UNPRESSED))) && !(ctrl1 & Y_UNPRESSED))
-		{
-			if (fg_color > BLACK)
-			{
-				fg_color -= 1;
-			} else {
-				fg_color = GREY;
-			}
-		}
+        if (((last_ctrl1 & Y_UNPRESSED) != ((ctrl1 & Y_UNPRESSED))) && !(ctrl1 & Y_UNPRESSED))
+        {
+            if (fg_color > BLACK)
+            {
+                fg_color -= 1;
+            } else {
+                fg_color = GREY;
+            }
+        }
 
-		if (((last_ctrl1 & SEL_UNPRESSED) != ((ctrl1 & SEL_UNPRESSED))) && !(ctrl1 & SEL_UNPRESSED))
-		{
-			bg_color = fg_color;
-		}
+        if (((last_ctrl1 & SEL_UNPRESSED) != ((ctrl1 & SEL_UNPRESSED))) && !(ctrl1 & SEL_UNPRESSED))
+        {
+            bg_color = fg_color;
+        }
 
-		if (!(ctrl1 & UP_UNPRESSED))
-		{
-			py -= 1;
-		}
+        if (!(ctrl1 & UP_UNPRESSED))
+        {
+            py -= 1;
+        }
 
-		if (!(ctrl1 & DN_UNPRESSED))
-		{
-			py += 1;
-		}
+        if (!(ctrl1 & DN_UNPRESSED))
+        {
+            py += 1;
+        }
 
-		if (!(ctrl1 & LT_UNPRESSED))
-		{
-			px -= 1;
-		}
+        if (!(ctrl1 & LT_UNPRESSED))
+        {
+            px -= 1;
+        }
 
-		if (!(ctrl1 & RT_UNPRESSED))
-		{
-			px += 1;
-		}
+        if (!(ctrl1 & RT_UNPRESSED))
+        {
+            px += 1;
+        }
 
-		if (py < 0)
-		{
-			py += HEIGHT;
-			px -= 1;
-		}
-		if (py > HEIGHT - 1)
-		{
-			py -= HEIGHT;
-			px += 1;
-		}
-		if (px < 0)
-		{
-			px += WIDTH;
-			py -= 1;
-		}
-		if (px > WIDTH - 1)
-		{
-			px -= WIDTH;
-			py +=1;
-		}
+        if (py < 0)
+        {
+            py += HEIGHT;
+            px -= 1;
+        }
+        if (py > HEIGHT - 1)
+        {
+            py -= HEIGHT;
+            px += 1;
+        }
+        if (px < 0)
+        {
+            px += WIDTH;
+            py -= 1;
+        }
+        if (px > WIDTH - 1)
+        {
+            px -= WIDTH;
+            py +=1;
+        }
 
-		if (((last_ctrl1 & STA_UNPRESSED) != ((ctrl1 & STA_UNPRESSED))) && !(ctrl1 & STA_UNPRESSED))
-		{
-			clear(bg_color);
-			RIA_STEP0 = 0;
-		} else {
-			RIA_ADDR0 = (px / 2) + (py * (WIDTH / 2));
-			last_color = (RIA_RW0 >> ((px % 2) * 4)) & COLOR_MASK;
-			RIA_RW0 &= ~(COLOR_MASK << ((px % 2) * 4));
-			RIA_RW0 |= (fg_color << ((px % 2) * 4));
-		}
+        if (((last_ctrl1 & STA_UNPRESSED) != ((ctrl1 & STA_UNPRESSED))) && !(ctrl1 & STA_UNPRESSED))
+        {
+            clear(bg_color);
+            RIA_STEP0 = 0;
+        } else {
+            RIA_ADDR0 = (px / 2) + (py * (WIDTH / 2));
+            last_color = (RIA_RW0 >> ((px % 2) * 4)) & COLOR_MASK;
+            RIA_RW0 &= ~(COLOR_MASK << ((px % 2) * 4));
+            RIA_RW0 |= (fg_color << ((px % 2) * 4));
+        }
 
 
 
-		// if (!(ctrl2 & A_UNPRESSED))
-		// {
-		// 	puts("Controller 2 A Pressed");
-		// }
-		// if (!(ctrl2 & B_UNPRESSED))
-		// {
-		// 	puts("Controller 2 B Pressed");
-		// }
-		// if (!(ctrl2 & X_UNPRESSED))
-		// {
-		// 	puts("Controller 2 X Pressed");
-		// }
+        // if (!(ctrl2 & A_UNPRESSED))
+        // {
+        // 	puts("Controller 2 A Pressed");
+        // }
+        // if (!(ctrl2 & B_UNPRESSED))
+        // {
+        // 	puts("Controller 2 B Pressed");
+        // }
+        // if (!(ctrl2 & X_UNPRESSED))
+        // {
+        // 	puts("Controller 2 X Pressed");
+        // }
 
-		// if (!(ctrl2 & Y_UNPRESSED))
-		// {
-		// 	puts("Controller 2 Y Pressed");
-		// }
+        // if (!(ctrl2 & Y_UNPRESSED))
+        // {
+        // 	puts("Controller 2 Y Pressed");
+        // }
 
-		// if (!(ctrl2 & STA_UNPRESSED))
-		// {
-		// 	puts("Controller 2 Start Pressed");
-		// }
+        // if (!(ctrl2 & STA_UNPRESSED))
+        // {
+        // 	puts("Controller 2 Start Pressed");
+        // }
 
-		// if (!(ctrl2 & SEL_UNPRESSED))
-		// {
-		// 	puts("Controller 2 Select Pressed");
-		// }
+        // if (!(ctrl2 & SEL_UNPRESSED))
+        // {
+        // 	puts("Controller 2 Select Pressed");
+        // }
 
-		// if (!(ctrl2 & UP_UNPRESSED))
-		// {
-		// 	puts("Controller 2 Up Pressed");
-		// }
+        // if (!(ctrl2 & UP_UNPRESSED))
+        // {
+        // 	puts("Controller 2 Up Pressed");
+        // }
 
-		// if (!(ctrl2 & DN_UNPRESSED))
-		// {
-		// 	puts("Controller 2 Down Pressed");
-		// }
+        // if (!(ctrl2 & DN_UNPRESSED))
+        // {
+        // 	puts("Controller 2 Down Pressed");
+        // }
 
-		// if (!(ctrl2 & LT_UNPRESSED))
-		// {
-		// 	puts("Controller 2 Left Pressed");
-		// }
+        // if (!(ctrl2 & LT_UNPRESSED))
+        // {
+        // 	puts("Controller 2 Left Pressed");
+        // }
 
-		// if (!(ctrl2 & RT_UNPRESSED))
-		// {
-		// 	puts("Controller 2 Right Pressed");
-		// }
+        // if (!(ctrl2 & RT_UNPRESSED))
+        // {
+        // 	puts("Controller 2 Right Pressed");
+        // }
 
-		// if (!(ctrl2 & L_UNPRESSED))
-		// {
-		// 	puts("Controller 2 L Pressed");
-		// }
+        // if (!(ctrl2 & L_UNPRESSED))
+        // {
+        // 	puts("Controller 2 L Pressed");
+        // }
 
-		// if (!(ctrl2 & R_UNPRESSED))
-		// {
-		// 	puts("Controller 2 R Pressed");
-		// }
-		if (ctrl1 & R_UNPRESSED)
-		{
-			delay();
-		}
-		last_ctrl1 = ctrl1;
-	}
+        // if (!(ctrl2 & R_UNPRESSED))
+        // {
+        // 	puts("Controller 2 R Pressed");
+        // }
+        if (ctrl1 & R_UNPRESSED)
+        {
+            delay();
+        }
+        last_ctrl1 = ctrl1;
+    }
 }

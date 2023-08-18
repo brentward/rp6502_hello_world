@@ -18,229 +18,229 @@ _ctrl2:			.res 3
 ;
 .include "rp6502.inc" 
 
-bit_latch = $08 ; PA3 (GPIO pin 9): LATCH (both controllers)  
-bit_data1 = $10 ; PA4 (GPIO pin 11): DATA  (controller #1)  
-bit_clock = $20 ; PA5 (GPIO pin 13): CLK   (both controllers)  
-bit_data2 = $40 ; PA6 (GPIO pin 15): DATA  (controller #2)
+bit_clock = $01 ; PA0 (GPIO pin 3): CLK   (both controllers)  
+bit_latch = $02 ; PA1 (GPIO pin 5): LATCH (both controllers)  
+bit_data1 = $04 ; PA2 (GPIO pin 7): DATA  (controller #1)  
+bit_data2 = $08 ; PA3 (GPIO pin 9): DATA  (controller #2)
 
 .code
 .proc _ctrl_init: near
-	lda #$FF-bit_data1-bit_data2
-	sta VIA_DDRA
-	rts
+    lda #$FF-bit_data1-bit_data2
+    sta VIA_DDRA
+    rts
 .endproc
 
 .proc _read_ctrl1: near
-	lda #00
-	sta VIA_PA1
+    lda #00
+    sta VIA_PA1
 
-	; pulse latch
-	lda #bit_latch
-	sta VIA_PA1
-	lda #0
-	sta VIA_PA1
+    ; pulse latch
+    lda #bit_latch
+    sta VIA_PA1
+    lda #0
+    sta VIA_PA1
 
-	; read 2x 8 bits
-	ldx #0
+    ; read 2x 8 bits
+    ldx #0
 loop2:
-	ldy #8
+    ldy #8
 loop1:
-	lda VIA_PA1
-	and #bit_data1
-	cmp #bit_data1
-	rol _ctrl1,X
-	lda #bit_clock
-	sta VIA_PA1
-	lda #0
-	sta VIA_PA1
-	dey
-	bne loop1
-	inx
-	cpx #2
-	bne loop2
-	rts
+    lda VIA_PA1
+    and #bit_data1
+    cmp #bit_data1
+    rol _ctrl1,X
+    lda #bit_clock
+    sta VIA_PA1
+    lda #0
+    sta VIA_PA1
+    dey
+    bne loop1
+    inx
+    cpx #2
+    bne loop2
+    rts
 .endproc
 
 .proc _read_ctrl2: near
-	lda #00
-	sta VIA_PA1
+    lda #00
+    sta VIA_PA1
 
-	; pulse latch
-	lda #bit_latch
-	sta VIA_PA1
-	lda #0
-	sta VIA_PA1
+    ; pulse latch
+    lda #bit_latch
+    sta VIA_PA1
+    lda #0
+    sta VIA_PA1
 
-	; read 2x 8 bits
-	ldx #0
+    ; read 2x 8 bits
+    ldx #0
 loop2:
-	ldy #8
+    ldy #8
 loop1:
-	lda VIA_PA1
-	cmp #bit_data2
-	rol _ctrl2,X
-	lda #bit_clock
-	sta VIA_PA1
-	lda #0
-	sta VIA_PA1
-	dey
-	bne loop1
-	inx
-	cpx #2
-	bne loop2
-	rts
+    lda VIA_PA1
+    cmp #bit_data2
+    rol _ctrl2,X
+    lda #bit_clock
+    sta VIA_PA1
+    lda #0
+    sta VIA_PA1
+    dey
+    bne loop1
+    inx
+    cpx #2
+    bne loop2
+    rts
 .endproc
 
 .proc _read_ctrls: near
-	lda #00
-	sta VIA_PA1
+    lda #00
+    sta VIA_PA1
 
-	; pulse latch
-	lda #bit_latch
-	sta VIA_PA1
-	lda #0
-	sta VIA_PA1
+    ; pulse latch
+    lda #bit_latch
+    sta VIA_PA1
+    lda #0
+    sta VIA_PA1
 
-	; read 2x 8 bits
-	ldx #0
+    ; read 2x 8 bits
+    ldx #0
 loop2:
-	ldy #8
+    ldy #8
 loop1:
-	lda VIA_PA1
-	cmp #bit_data2
-	rol _ctrl2,X
-	and #bit_data1
-	cmp #bit_data1
-	rol _ctrl1,X
-	lda #bit_clock
-	sta VIA_PA1
-	lda #0
-	sta VIA_PA1
-	dey
-	bne loop1
-	inx
-	cpx #2
-	bne loop2
-	rts
+    lda VIA_PA1
+    cmp #bit_data2
+    rol _ctrl2,X
+    and #bit_data1
+    cmp #bit_data1
+    rol _ctrl1,X
+    lda #bit_clock
+    sta VIA_PA1
+    lda #0
+    sta VIA_PA1
+    dey
+    bne loop1
+    inx
+    cpx #2
+    bne loop2
+    rts
 .endproc
 
 .proc _read_nes_ctrl1: near
-	lda #00
-	sta VIA_PA1
+    lda #00
+    sta VIA_PA1
 
-	; pulse latch
-	lda #bit_latch
-	sta VIA_PA1
-	lda #0
-	sta VIA_PA1
+    ; pulse latch
+    lda #bit_latch
+    sta VIA_PA1
+    lda #0
+    sta VIA_PA1
 
-	ldy #8
+    ldy #8
 loop:
-	lda VIA_PA1
-	and #bit_data1
-	cmp #bit_data1
-	rol _ctrl1,X
-	lda #bit_clock
-	sta VIA_PA1
-	lda #0
-	sta VIA_PA1
-	dey
-	bne loop
-	rts
+    lda VIA_PA1
+    and #bit_data1
+    cmp #bit_data1
+    rol _ctrl1,X
+    lda #bit_clock
+    sta VIA_PA1
+    lda #0
+    sta VIA_PA1
+    dey
+    bne loop
+    rts
 .endproc
 
 .proc _read_nes_ctrl2: near
-	lda #00
-	sta VIA_PA1
+    lda #00
+    sta VIA_PA1
 
-	; pulse latch
-	lda #bit_latch
-	sta VIA_PA1
-	lda #0
-	sta VIA_PA1
+    ; pulse latch
+    lda #bit_latch
+    sta VIA_PA1
+    lda #0
+    sta VIA_PA1
 
-	ldy #8
+    ldy #8
 loop:
-	lda VIA_PA1
-	cmp #bit_data2
-	rol _ctrl2,X
-	lda #bit_clock
-	sta VIA_PA1
-	lda #0
-	sta VIA_PA1
-	dey
-	bne loop
-	rts
+    lda VIA_PA1
+    cmp #bit_data2
+    rol _ctrl2,X
+    lda #bit_clock
+    sta VIA_PA1
+    lda #0
+    sta VIA_PA1
+    dey
+    bne loop
+    rts
 .endproc
 
 .proc _read_nes_ctrls: near
-	lda #00
-	sta VIA_PA1
+    lda #00
+    sta VIA_PA1
 
-	; pulse latch
-	lda #bit_latch
-	sta VIA_PA1  
-	lda #0
-	sta VIA_PA1
+    ; pulse latch
+    lda #bit_latch
+    sta VIA_PA1  
+    lda #0
+    sta VIA_PA1
 
-	ldy #8
+    ldy #8
 loop:
-	lda VIA_PA1
-	cmp #bit_data2
-	rol _ctrl2,X
-	and #bit_data1
-	cmp #bit_data1
-	rol _ctrl1,X
-	lda #bit_clock
-	sta VIA_PA1
-	lda #0
-	sta VIA_PA1
-	dey
-	bne loop
-	rts
+    lda VIA_PA1
+    cmp #bit_data2
+    rol _ctrl2,X
+    and #bit_data1
+    cmp #bit_data1
+    rol _ctrl1,X
+    lda #bit_clock
+    sta VIA_PA1
+    lda #0
+    sta VIA_PA1
+    dey
+    bne loop
+    rts
 .endproc
 
 .proc _read_controllers: near
-	lda #00
-	sta VIA_PA1
+    lda #00
+    sta VIA_PA1
 
-	; pulse latch
-	lda #bit_latch
-	sta VIA_PA1
-	lda #0
-	sta VIA_PA1
+    ; pulse latch
+    lda #bit_latch
+    sta VIA_PA1
+    lda #0
+    sta VIA_PA1
 
-	; read 3x 8 bits
-	ldx #0
+    ; read 3x 8 bits
+    ldx #0
 loop2:
-	ldy #8
+    ldy #8
 loop1:
-	lda VIA_PA1
-	cmp #bit_data2
-	rol _ctrl2,X
-	and #bit_data1
-	cmp #bit_data1
-	rol _ctrl1,X
-	lda #bit_clock
-	sta VIA_PA1
-	lda #0
-	sta VIA_PA1
-	dey
-	bne loop1
-	inx
-	cpx #3
-	bne loop2
-	rts
+    lda VIA_PA1
+    cmp #bit_data2
+    rol _ctrl2,X
+    and #bit_data1
+    cmp #bit_data1
+    rol _ctrl1,X
+    lda #bit_clock
+    sta VIA_PA1
+    lda #0
+    sta VIA_PA1
+    dey
+    bne loop1
+    inx
+    cpx #3
+    bne loop2
+    rts
 .endproc
 
 .proc _delay: near
-	ldx #$FF ;2
-	ldy #$FF ;2: 4 total
+    ldx #$FF ;2
+    ldy #$FF ;2: 4 total
 loop:
-	dey ;2
-	bne loop ;3, 2
-	dex ;2
-	bne loop ;3, 2
-	rts ;6
+    dey ;2
+    bne loop ;3, 2
+    dex ;2
+    bne loop ;3, 2
+    rts ;6
 .endproc
 
