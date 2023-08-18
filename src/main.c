@@ -16,8 +16,16 @@
 
 #define COLOR_MASK 0b1111
 
+#define CTRL1_DATA_MASK 0b00000100
+#define CTRL2_DATA_MASK 0b00001000
+
 #define WIDTH 320
 #define HEIGHT 240 // 180 or 240
+
+static void init()
+{
+    VIA.ddra = ~(CTRL1_DATA_MASK | CTRL2_DATA_MASK);
+}
 
 static void wait()
 {
@@ -81,7 +89,7 @@ void main()
 
     puts("Hello, people! SNES controller draw!");
     wait();
-    ctrl_init();
+    init();
     #if (HEIGHT == 180)
         vmode(2);
     #else
