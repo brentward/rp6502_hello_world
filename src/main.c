@@ -36,11 +36,11 @@ static void vmode(uint16_t data)
 }
 
 
-void clear(uint8_t bgnd_color)
+void clear(uint8_t color)
 {
 	uint16_t i = 0;
 	uint8_t vbyte;
-	vbyte = (bgnd_color << 4) | bgnd_color;
+	vbyte = (color << 4) | color;
     RIA_ADDR0 = 0;
     RIA_STEP0 = 1;
 	
@@ -72,8 +72,8 @@ void clear(uint8_t bgnd_color)
 void main()
 {
 	int16_t px = 0, py =0 ;
-	int8_t vbyte = RED;
-	int8_t bgnd_vbyte = BLACK;
+	int8_t fg_color = GREEN;
+	int8_t bg_color = BLACK;
 	int8_t last_color = BLACK;
 	uint16_t last_ctrl1 = 0xFFFF;
 	// uint8_t ctrl1_attached = 0;
@@ -87,13 +87,13 @@ void main()
 	#else
 		vmode(1);
 	#endif
-	clear(bgnd_vbyte);
+	clear(bg_color);
 	RIA_STEP0 = 0;
 	while (1)
 	{
 		read_controllers();
 		
-		if (((ctrl1 & ~DN_UNPRESSED) != DPAD_UNPRESSED) && !(ctrl1 & L_UNPRESSED))
+		if (((ctrl1 & ~DPAD_UNPRESSED) != DPAD_UNPRESSED) && !(ctrl1 & L_UNPRESSED))
 		{
 			RIA_ADDR0 = (px / 2) + (py * (WIDTH / 2));
 			RIA_RW0 &= ~(COLOR_MASK << ((px % 2) * 4));
@@ -112,46 +112,46 @@ void main()
 
 		if (!(ctrl1 & A_UNPRESSED))
 		{
-			if (vbyte < GREY)
+			if (fg_color < GREY)
 			{
-				vbyte += 1;
+				fg_color += 1;
 			} else {
-				vbyte = BLACK;
+				fg_color = BLACK;
 			}
 		}
 		if (((last_ctrl1 & B_UNPRESSED) != ((ctrl1 & B_UNPRESSED))) && !(ctrl1 & B_UNPRESSED))
 		{
-			if (vbyte < GREY)
+			if (fg_color < GREY)
 			{
-				vbyte += 1;
+				fg_color += 1;
 			} else {
-				vbyte = BLACK;
+				fg_color = BLACK;
 			}
 		}
 
 		if (!(ctrl1 & X_UNPRESSED))
 		{
-			if (vbyte > BLACK)
+			if (fg_color > BLACK)
 			{
-				vbyte -= 1;
+				fg_color -= 1;
 			} else {
-				vbyte = GREY;
+				fg_color = GREY;
 			}
 		}
 
 		if (((last_ctrl1 & Y_UNPRESSED) != ((ctrl1 & Y_UNPRESSED))) && !(ctrl1 & Y_UNPRESSED))
 		{
-			if (vbyte > BLACK)
+			if (fg_color > BLACK)
 			{
-				vbyte -= 1;
+				fg_color -= 1;
 			} else {
-				vbyte = GREY;
+				fg_color = GREY;
 			}
 		}
 
 		if (((last_ctrl1 & SEL_UNPRESSED) != ((ctrl1 & SEL_UNPRESSED))) && !(ctrl1 & SEL_UNPRESSED))
 		{
-			bgnd_vbyte = vbyte;
+			bg_color = fg_color;
 		}
 
 		if (!(ctrl1 & UP_UNPRESSED))
@@ -197,13 +197,13 @@ void main()
 
 		if (((last_ctrl1 & STA_UNPRESSED) != ((ctrl1 & STA_UNPRESSED))) && !(ctrl1 & STA_UNPRESSED))
 		{
-			clear(bgnd_vbyte);
+			clear(bg_color);
 			RIA_STEP0 = 0;
 		} else {
 			RIA_ADDR0 = (px / 2) + (py * (WIDTH / 2));
 			last_color = (RIA_RW0 >> ((px % 2) * 4)) & COLOR_MASK;
 			RIA_RW0 &= ~(COLOR_MASK << ((px % 2) * 4));
-			RIA_RW0 |= (vbyte << ((px % 2) * 4));
+			RIA_RW0 |= (fg_color << ((px % 2) * 4));
 		}
 
 
