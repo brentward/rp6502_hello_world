@@ -72,7 +72,7 @@ void clear(uint8_t bgnd_color)
 void main()
 {
 	int16_t px = 0, py =0 ;
-    int8_t vbyte = RED;
+	int8_t vbyte = RED;
 	int8_t bgnd_vbyte = BLACK;
 	int8_t last_color = BLACK;
 	uint16_t last_ctrl1 = 0xFFFF;
