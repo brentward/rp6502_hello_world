@@ -67,7 +67,8 @@ void clear(uint8_t color)
         RIA_RW0 = vbyte;
         RIA_RW0 = vbyte;
     }
-    RIA_ADDR0 = 0;}
+    RIA_ADDR0 = 0;
+}
 
 void main()
 {
